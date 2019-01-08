@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="inputService" class="ru.lilitweb.testsystem.service.ConsoleTestInputService">
+    </bean>
+    <bean id="outputService" class="ru.lilitweb.testsystem.service.ConsoleTestOutputService"/>
+    <bean id="questionsLoaderService" class="ru.lilitweb.testsystem.service.CsvQuestionsLoaderService"/>
+    <bean id="testService" class="ru.lilitweb.testsystem.service.TestServiceImpl">
+        <constructor-arg name="inputService" ref="inputService"/>
+        <constructor-arg name="outputService" ref="outputService"/>
+    </bean>
+</beans>
