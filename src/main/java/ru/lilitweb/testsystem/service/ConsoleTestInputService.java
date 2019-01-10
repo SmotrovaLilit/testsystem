@@ -1,26 +1,27 @@
 package ru.lilitweb.testsystem.service;
 
 import ru.lilitweb.testsystem.Question;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ConsoleTestInputService implements TestInputService {
-    private BufferedReader reader;
+    private BufferedReader inputReader;
+    private PrintStream outputStream;
 
-    public ConsoleTestInputService() {
-        this.reader = new BufferedReader(new InputStreamReader(System.in));
+    public ConsoleTestInputService(InputStream input, PrintStream output) {
+        this.inputReader = new BufferedReader(new InputStreamReader(input));
+        this.outputStream = output;
     }
 
     public Map<Question, String> loadAnswers(List<Question> questions) throws TestInputException {
         Map<Question, String> res = new HashMap<>();
         try {
             for (Question q : questions) {
-                System.out.println(q.getQuestionContent());
-                String answer = reader.readLine();
+                outputStream.println(q.getQuestionContent());
+                String answer = inputReader.readLine();
                 res.put(q, answer);
             }
         } catch (IOException e) {
@@ -31,9 +32,9 @@ public class ConsoleTestInputService implements TestInputService {
     }
 
     public String getPersonFio() throws TestInputException {
-        System.out.println("Фамилия имя:");
+        outputStream.println("Фамилия имя:");
         try {
-            return reader.readLine();
+            return inputReader.readLine();
         } catch (IOException e) {
             throw new TestInputException(e);
         }
