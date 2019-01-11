@@ -1,6 +1,8 @@
 package ru.lilitweb.testsystem.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import ru.lilitweb.testsystem.Question;
 
 import java.io.*;
@@ -13,12 +15,22 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 class ConsoleTestInputServiceTest {
+    @Mock
+    private LocalisationService source;
+
+    @Mock
+    private PrintStream stream;
+
+    @BeforeEach
+    void setUp() {
+        source = mock(LocalisationService.class);
+        stream = mock(PrintStream.class);
+    }
 
     @Test
     void loadAnswers() throws TestInputException {
         InputStream reader = new ByteArrayInputStream("answer of tester\n".getBytes());
-        PrintStream stream = mock(PrintStream.class);
-        TestInputService service = new ConsoleTestInputService(reader, stream);
+        TestInputService service = new ConsoleTestInputService(reader, stream, source);
 
         List<Question> questions = new ArrayList<>();
         questions.add(new Question("question", "answer"));
@@ -32,9 +44,8 @@ class ConsoleTestInputServiceTest {
 
     @Test
     void getPersonFio() throws TestInputException {
-        PrintStream stream = mock(PrintStream.class);
         InputStream reader = new ByteArrayInputStream("fio".getBytes());
-        TestInputService service = new ConsoleTestInputService(reader, stream);
+        TestInputService service = new ConsoleTestInputService(reader, stream, source);
 
         String fio = service.getPersonFio();
         assertEquals(fio, "fio");
