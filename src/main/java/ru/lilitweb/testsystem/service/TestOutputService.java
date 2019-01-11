@@ -1,7 +1,7 @@
 package ru.lilitweb.testsystem.service;
 
-import ru.lilitweb.testsystem.Report;
+import ru.lilitweb.testsystem.models.Report;
 
 public interface TestOutputService {
-    void print(Report report);
+    void printTestExecutionReport(Report report);
 }

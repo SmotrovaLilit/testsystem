@@ -1,6 +1,6 @@
 package ru.lilitweb.testsystem.service;
 
-import ru.lilitweb.testsystem.Report;
+import ru.lilitweb.testsystem.models.Report;
 
 import java.io.PrintStream;
 
@@ -11,7 +11,7 @@ public class ConsoleTestOutputService implements TestOutputService {
         this.stream = stream;
     }
 
-    public void print(Report report) {
+    public void printTestExecutionReport(Report report) {
         stream.println(report.getFio() + ":");
         stream.println(String.format("%d/%d", report.getSuccessAnswerCount(), report.getQuestionCount()));
         stream.println(report.isPassed() ? "Тест успешно пройден" : "Тест провален");

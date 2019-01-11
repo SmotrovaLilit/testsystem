@@ -1,6 +1,7 @@
 package ru.lilitweb.testsystem;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.lilitweb.testsystem.models.Report;
 import ru.lilitweb.testsystem.service.QuestionsLoaderService;
 import ru.lilitweb.testsystem.service.TestInputException;
 import ru.lilitweb.testsystem.service.TestService;

@@ -1,7 +1,7 @@
 package ru.lilitweb.testsystem.service;
 
-import ru.lilitweb.testsystem.Question;
-import ru.lilitweb.testsystem.Report;
+import ru.lilitweb.testsystem.models.Question;
+import ru.lilitweb.testsystem.models.Report;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +17,7 @@ public class TestServiceImpl implements TestService {
 
     public Report process(List<Question> questions) throws TestInputException {
         String fio = inputService.getPersonFio();
-        Map<Question, String> answers = inputService.loadAnswers(questions);
+        Map<Question, String> answers = inputService.readAnswers(questions);
         Report report = createReport(answers);
         report.setFio(fio);
         return report;
@@ -43,6 +43,6 @@ public class TestServiceImpl implements TestService {
     }
 
     public void print(Report report) {
-        outputService.print(report);
+        outputService.printTestExecutionReport(report);
     }
 }

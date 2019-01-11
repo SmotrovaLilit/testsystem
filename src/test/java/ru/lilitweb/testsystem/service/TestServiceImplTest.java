@@ -3,8 +3,8 @@ package ru.lilitweb.testsystem.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import ru.lilitweb.testsystem.Question;
-import ru.lilitweb.testsystem.Report;
+import ru.lilitweb.testsystem.models.Question;
+import ru.lilitweb.testsystem.models.Report;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +38,7 @@ class TestServiceImplTest {
         questions.add(new Question("question1", "answer1"));
         questions.add(new Question("question2", "answer2"));
         when(inputService.getPersonFio()).thenReturn("fio");
-        when(inputService.loadAnswers(questions)).thenReturn(getAnswers(questions));
+        when(inputService.readAnswers(questions)).thenReturn(getAnswers(questions));
 
         Report report = testService.process(questions);
 
@@ -59,7 +59,7 @@ class TestServiceImplTest {
         Map<Question, String> answers = new HashMap<>();
         answers.put(questions.get(0), questions.get(0).getCorrectAnswer());
         answers.put(questions.get(1), "fail answer");
-        when(inputService.loadAnswers(questions)).thenReturn(answers);
+        when(inputService.readAnswers(questions)).thenReturn(answers);
 
         Report report = testService.process(questions);
         assertEquals("fio", report.getFio());
@@ -80,6 +80,6 @@ class TestServiceImplTest {
     void print() {
         Report report = new Report();
         testService.print(report);
-        verify(outputService, times(1)).print(report);
+        verify(outputService, times(1)).printTestExecutionReport(report);
     }
 }

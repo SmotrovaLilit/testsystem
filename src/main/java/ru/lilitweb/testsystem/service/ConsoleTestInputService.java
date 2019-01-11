@@ -1,6 +1,6 @@
 package ru.lilitweb.testsystem.service;
 
-import ru.lilitweb.testsystem.Question;
+import ru.lilitweb.testsystem.models.Question;
 
 import java.io.*;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public class ConsoleTestInputService implements TestInputService {
         this.outputStream = output;
     }
 
-    public Map<Question, String> loadAnswers(List<Question> questions) throws TestInputException {
+    public Map<Question, String> readAnswers(List<Question> questions) throws TestInputException {
         Map<Question, String> res = new HashMap<>();
         try {
             for (Question q : questions) {

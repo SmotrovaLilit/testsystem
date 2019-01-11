@@ -1,7 +1,7 @@
 package ru.lilitweb.testsystem.service;
 
-import ru.lilitweb.testsystem.Question;
-import ru.lilitweb.testsystem.Report;
+import ru.lilitweb.testsystem.models.Question;
+import ru.lilitweb.testsystem.models.Report;
 
 import java.util.List;
 

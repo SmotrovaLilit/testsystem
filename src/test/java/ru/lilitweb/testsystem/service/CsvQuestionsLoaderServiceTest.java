@@ -1,7 +1,7 @@
 package ru.lilitweb.testsystem.service;
 
 import org.junit.jupiter.api.Test;
-import ru.lilitweb.testsystem.Question;
+import ru.lilitweb.testsystem.models.Question;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +17,7 @@ class CsvQuestionsLoaderServiceTest {
         QuestionsLoaderService service = new CsvQuestionsLoaderService();
         BufferedReader reader = new BufferedReader(new StringReader("question1;answer1\nquestion2;answer2\n"));
         List<Question> questions = service.getQuestions(reader);
-        
+
         assertEquals(questions.size(), 2);
 
         assertEquals(questions.get(0).getQuestionContent(), "question1");

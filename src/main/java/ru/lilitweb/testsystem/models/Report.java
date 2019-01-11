@@ -1,4 +1,4 @@
-package ru.lilitweb.testsystem;
+package ru.lilitweb.testsystem.models;
 
 public class Report {
     private int successAnswerCount;

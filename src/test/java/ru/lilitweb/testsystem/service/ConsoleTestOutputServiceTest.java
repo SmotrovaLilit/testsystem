@@ -1,7 +1,7 @@
 package ru.lilitweb.testsystem.service;
 
 import org.junit.jupiter.api.Test;
-import ru.lilitweb.testsystem.Report;
+import ru.lilitweb.testsystem.models.Report;
 
 import java.io.PrintStream;
 
@@ -11,7 +11,7 @@ import static org.mockito.Mockito.verify;
 class ConsoleTestOutputServiceTest {
 
     @Test
-    void print() {
+    void printTestExecutionReport() {
         PrintStream stream = mock(PrintStream.class);
         TestOutputService service = new ConsoleTestOutputService(stream);
         Report report = new Report();
@@ -21,12 +21,12 @@ class ConsoleTestOutputServiceTest {
         report.incSuccessAnswerCount();
         report.setFio("fio");
 
-        service.print(report);
+        service.printTestExecutionReport(report);
         verify(stream).println("Тест успешно пройден");
     }
 
     @Test
-    void printFailTest() {
+    void printTestExecutionReportFailTest() {
         PrintStream stream = mock(PrintStream.class);
         TestOutputService service = new ConsoleTestOutputService(stream);
         Report report = new Report();
@@ -35,7 +35,7 @@ class ConsoleTestOutputServiceTest {
         report.incSuccessAnswerCount();
         report.setFio("fio");
 
-        service.print(report);
+        service.printTestExecutionReport(report);
         verify(stream).println("Тест провален");
     }
 }
