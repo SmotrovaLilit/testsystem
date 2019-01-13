@@ -34,8 +34,6 @@ class ConsoleTestInputServiceTest {
         verify(stream).println("question");
     }
 
-
-
     @Test
     void getPersonFio() throws TestInputException {
         InputStream reader = new ByteArrayInputStream("fio".getBytes());

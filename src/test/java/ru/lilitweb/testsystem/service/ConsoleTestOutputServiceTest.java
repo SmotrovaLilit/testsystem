@@ -58,6 +58,21 @@ class ConsoleTestOutputServiceTest {
         verify(stream).println("fail");
     }
 
-    // TODO: printQuestion
-    // TODO: printFioQuestion
+    @Test
+    void printQuestion() {
+        TestOutputService service = new ConsoleTestOutputService(stream, source);
+        String questionText = "some question";
+        service.printQuestion(questionText);
+        verify(stream).println(questionText);
+
+    }
+
+    @Test
+    void printFioQuestion() {
+        TestOutputService service = new ConsoleTestOutputService(stream, source);
+        when(source.getMessage("input.name.label", null)).thenReturn("fio ask");
+
+        service.printFioQuestion();
+        verify(stream).println("fio ask");
+    }
 }
