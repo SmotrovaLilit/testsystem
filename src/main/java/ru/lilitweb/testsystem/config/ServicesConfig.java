@@ -5,8 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.lilitweb.testsystem.service.*;
 
-import java.util.Locale;
-
 @Configuration
 public class ServicesConfig {
 
@@ -26,12 +24,22 @@ public class ServicesConfig {
     }
 
     @Bean
-    public QuestionsLoaderService questionsLoaderService() {
-        return new CsvQuestionsLoaderService();
+    public TestsLoaderService testsLoaderService() {
+        return new CsvTestsLoaderService();
     }
 
     @Bean
-    public TestService testService(TestInputService input, TestOutputService output) {
-        return new TestServiceImpl(input, output);
+    public FileResolverService fileResolverService() {
+        return new FileResolverServiceImpl();
+    }
+
+    @Bean
+    public TestRunnerService testService(
+            TestInputService input,
+            TestOutputService output,
+            TestsLoaderService loader,
+            FileResolverService resolver
+    ) {
+        return new TestRunnerServiceImpl(input, output, loader, resolver);
     }
 }

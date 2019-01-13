@@ -1,11 +1,6 @@
 package ru.lilitweb.testsystem.service;
 
-import ru.lilitweb.testsystem.Question;
-
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ConsoleTestInputService implements TestInputService {
     private BufferedReader inputReader;
@@ -19,19 +14,13 @@ public class ConsoleTestInputService implements TestInputService {
         this.source = source;
     }
 
-    public Map<Question, String> loadAnswers(List<Question> questions) throws TestInputException {
-        Map<Question, String> res = new HashMap<>();
+    public String getUserAnswer(String question) throws TestInputException {
         try {
-            for (Question q : questions) {
-                outputStream.println(q.getQuestionContent());
-                String answer = inputReader.readLine();
-                res.put(q, answer);
-            }
+            outputStream.println(question);
+            return inputReader.readLine();
         } catch (IOException e) {
             throw new TestInputException(e);
         }
-
-        return res;
     }
 
     public String getPersonFio() throws TestInputException {

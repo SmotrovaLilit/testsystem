@@ -3,7 +3,7 @@ package ru.lilitweb.testsystem.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import ru.lilitweb.testsystem.Report;
+import ru.lilitweb.testsystem.models.ReportModel;
 
 import java.io.PrintStream;
 
@@ -28,7 +28,7 @@ class ConsoleTestOutputServiceTest {
     @Test
     void print() {
         TestOutputService service = new ConsoleTestOutputService(stream, source);
-        Report report = new Report();
+        ReportModel report = new ReportModel();
         report.setPassed(true);
         report.setQuestionCount(2);
         report.incSuccessAnswerCount();
@@ -45,7 +45,7 @@ class ConsoleTestOutputServiceTest {
     @Test
     void printFailTest() {
         TestOutputService service = new ConsoleTestOutputService(stream, source);
-        Report report = new Report();
+        ReportModel report = new ReportModel();
         report.setPassed(false);
         report.setQuestionCount(2);
         report.incSuccessAnswerCount();

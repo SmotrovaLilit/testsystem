@@ -3,12 +3,8 @@ package ru.lilitweb.testsystem.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import ru.lilitweb.testsystem.Question;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -28,16 +24,14 @@ class ConsoleTestInputServiceTest {
     }
 
     @Test
-    void loadAnswers() throws TestInputException {
+    void getUserAnswer() throws TestInputException {
         InputStream reader = new ByteArrayInputStream("answer of tester\n".getBytes());
         TestInputService service = new ConsoleTestInputService(reader, stream, source);
 
-        List<Question> questions = new ArrayList<>();
-        questions.add(new Question("question", "answer"));
+        String answer = service.getUserAnswer("question");
 
-        Map<Question, String> answers = service.loadAnswers(questions);
-        assertEquals(answers.get(questions.get(0)), "answer of tester");
-        verify(stream).println(questions.get(0).getQuestionContent());
+        assertEquals(answer, "answer of tester");
+        verify(stream).println("question");
     }
 
 
