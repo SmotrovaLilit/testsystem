@@ -19,27 +19,7 @@ public class ServicesConfig {
     }
 
     @Bean
-    public TestOutputService outputService(LocalisationService sourse) {
-        return new ConsoleTestOutputService(System.out, sourse);
-    }
-
-    @Bean
-    public QuestionsLoaderService testsLoaderService() {
-        return new CsvTestsLoaderService();
-    }
-
-    @Bean
-    public FileResolverService fileResolverService() {
-        return new FileResolverServiceImpl();
-    }
-
-    @Bean
-    public TestRunnerService testService(
-            TestInputService input,
-            TestOutputService output,
-            QuestionsLoaderService loader,
-            FileResolverService resolver
-    ) {
-        return new TestRunnerServiceImpl(input, output, loader, resolver);
+    public TestOutputService outputService(LocalisationService source) {
+        return new ConsoleTestOutputService(System.out, source);
     }
 }

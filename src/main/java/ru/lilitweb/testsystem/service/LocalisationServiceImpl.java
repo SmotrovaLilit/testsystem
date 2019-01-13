@@ -1,8 +1,10 @@
 package ru.lilitweb.testsystem.service;
 
 import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Service;
 
 import java.util.Locale;
+
 
 public class LocalisationServiceImpl implements LocalisationService {
 

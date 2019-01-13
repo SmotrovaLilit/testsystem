@@ -1,5 +1,6 @@
 package ru.lilitweb.testsystem.service;
 
+import org.springframework.stereotype.Service;
 import ru.lilitweb.testsystem.Main;
 
 import java.io.BufferedReader;
@@ -8,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Objects;
 
+@Service
 public class FileResolverServiceImpl implements FileResolverService {
     @Override
     public BufferedReader getFileReader(String filename) throws FileNotFoundException {

@@ -1,11 +1,13 @@
 package ru.lilitweb.testsystem.service;
 
+import org.springframework.stereotype.Service;
 import ru.lilitweb.testsystem.models.ReportModel;
 import ru.lilitweb.testsystem.models.QuestionModel;
 
 import java.io.*;
 import java.util.List;
 
+@Service
 public class TestRunnerServiceImpl implements TestRunnerService {
     private TestInputService inputService;
     private TestOutputService outputService;
