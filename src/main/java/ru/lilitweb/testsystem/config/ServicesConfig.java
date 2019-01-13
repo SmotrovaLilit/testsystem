@@ -14,8 +14,8 @@ public class ServicesConfig {
     }
 
     @Bean
-    public TestInputService inputService(LocalisationService sourse) {
-        return new ConsoleTestInputService(System.in, System.out, sourse);
+    public TestInputService inputService() {
+        return new ConsoleTestInputService(System.in);
     }
 
     @Bean
@@ -24,7 +24,7 @@ public class ServicesConfig {
     }
 
     @Bean
-    public TestsLoaderService testsLoaderService() {
+    public QuestionsLoaderService testsLoaderService() {
         return new CsvTestsLoaderService();
     }
 
@@ -37,7 +37,7 @@ public class ServicesConfig {
     public TestRunnerService testService(
             TestInputService input,
             TestOutputService output,
-            TestsLoaderService loader,
+            QuestionsLoaderService loader,
             FileResolverService resolver
     ) {
         return new TestRunnerServiceImpl(input, output, loader, resolver);

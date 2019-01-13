@@ -1,7 +1,7 @@
 package ru.lilitweb.testsystem.service;
 
 import ru.lilitweb.testsystem.models.ReportModel;
-import ru.lilitweb.testsystem.models.TestModel;
+import ru.lilitweb.testsystem.models.QuestionModel;
 
 import java.io.*;
 import java.util.List;
@@ -9,45 +9,51 @@ import java.util.List;
 public class TestRunnerServiceImpl implements TestRunnerService {
     private TestInputService inputService;
     private TestOutputService outputService;
-    private TestsLoaderService testLoaderService;
+    private QuestionsLoaderService questionsLoaderService;
     private FileResolverService fileResolverService;
 
     public TestRunnerServiceImpl(
             TestInputService inputService,
             TestOutputService outputService,
-            TestsLoaderService testLoaderService,
+            QuestionsLoaderService testLoaderService,
             FileResolverService fileResolverService
     ) {
         this.inputService = inputService;
         this.outputService = outputService;
-        this.testLoaderService = testLoaderService;
+        this.questionsLoaderService = testLoaderService;
         this.fileResolverService = fileResolverService;
     }
 
     public void process(String filename) throws TestInputException, IOException {
-        List<TestModel> tests;
+        List<QuestionModel> questions;
 
         try (BufferedReader reader = fileResolverService.getFileReader(filename)) {
-            tests = testLoaderService.loadTests(reader);
+            questions = questionsLoaderService.loadQuestions(reader);
         }
 
+        outputService.printFioQuestion();
         String fio = inputService.getPersonFio();
 
         ReportModel report = new ReportModel();
         report.setFio(fio);
-        report.setQuestionCount(tests.size());
+        report.setQuestionCount(questions.size());
         report.setPassed(true);
 
-        for (TestModel test : tests) {
-            test.setUserAnswer(inputService.getUserAnswer(test.getQuestionContent()));
+        for (QuestionModel question : questions) {
+            outputService.printQuestion(question.getQuestionContent());
+            String userAnswer = inputService.getUserAnswer(question.getQuestionContent());
 
-            if (test.isCorrectAnswer()) {
+            if (isCorrectAnswer(question, userAnswer)) {
                 report.incSuccessAnswerCount();
                 continue;
             }
             report.setPassed(false);
         }
 
-        outputService.print(report);
+        outputService.printTestReport(report);
+    }
+
+    private boolean isCorrectAnswer(QuestionModel question, String userAnswer) {
+        return question.getCorrectAnswer().equals(userAnswer);
     }
 }

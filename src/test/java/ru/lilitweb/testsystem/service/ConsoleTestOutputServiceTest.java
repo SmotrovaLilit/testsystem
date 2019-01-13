@@ -26,7 +26,7 @@ class ConsoleTestOutputServiceTest {
     }
 
     @Test
-    void print() {
+    void printTestReport() {
         TestOutputService service = new ConsoleTestOutputService(stream, source);
         ReportModel report = new ReportModel();
         report.setPassed(true);
@@ -36,14 +36,14 @@ class ConsoleTestOutputServiceTest {
         report.setFio("fio");
         when(source.getMessage("test.result.success", null)).thenReturn("ok");
 
-        service.print(report);
+        service.printTestReport(report);
         verify(stream).println("fio:");
         verify(stream).println("2/2");
         verify(stream).println("ok");
     }
 
     @Test
-    void printFailTest() {
+    void printTestReportFail() {
         TestOutputService service = new ConsoleTestOutputService(stream, source);
         ReportModel report = new ReportModel();
         report.setPassed(false);
@@ -52,9 +52,12 @@ class ConsoleTestOutputServiceTest {
         report.setFio("fio");
         when(source.getMessage("test.result.failed", null)).thenReturn("fail");
 
-        service.print(report);
+        service.printTestReport(report);
         verify(stream).println("fio:");
         verify(stream).println("1/2");
         verify(stream).println("fail");
     }
+
+    // TODO: printQuestion
+    // TODO: printFioQuestion
 }

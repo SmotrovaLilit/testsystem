@@ -26,7 +26,7 @@ class ConsoleTestInputServiceTest {
     @Test
     void getUserAnswer() throws TestInputException {
         InputStream reader = new ByteArrayInputStream("answer of tester\n".getBytes());
-        TestInputService service = new ConsoleTestInputService(reader, stream, source);
+        TestInputService service = new ConsoleTestInputService(reader);
 
         String answer = service.getUserAnswer("question");
 
@@ -39,7 +39,7 @@ class ConsoleTestInputServiceTest {
     @Test
     void getPersonFio() throws TestInputException {
         InputStream reader = new ByteArrayInputStream("fio".getBytes());
-        TestInputService service = new ConsoleTestInputService(reader, stream, source);
+        TestInputService service = new ConsoleTestInputService(reader);
 
         String fio = service.getPersonFio();
         assertEquals(fio, "fio");

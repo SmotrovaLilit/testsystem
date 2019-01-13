@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import ru.lilitweb.testsystem.models.ReportModel;
-import ru.lilitweb.testsystem.models.TestModel;
+import ru.lilitweb.testsystem.models.QuestionModel;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -25,13 +25,13 @@ class TestRunnerServiceImplTest {
     private FileResolverService fileResolverService;
 
     @Mock
-    private TestsLoaderService testLoaderService;
+    private QuestionsLoaderService testLoaderService;
 
     @BeforeEach
     void setUp() {
         inputService = mock(TestInputService.class);
         outputService = mock(TestOutputService.class);
-        testLoaderService = mock(TestsLoaderService.class);
+        testLoaderService = mock(QuestionsLoaderService.class);
         fileResolverService = mock(FileResolverService.class);
         testService = new TestRunnerServiceImpl(inputService, outputService, testLoaderService, fileResolverService);
 
@@ -40,16 +40,16 @@ class TestRunnerServiceImplTest {
     @Test
     void process() throws TestInputException, IOException {
         BufferedReader reader = new BufferedReader(new StringReader("question1;answer1;\n"));
-        when(fileResolverService.getFileReader("test.css")).thenReturn(reader);
+        when(fileResolverService.getFileReader("test.csv")).thenReturn(reader);
 
-        List<TestModel> tests = new ArrayList<>();
-        tests.add(new TestModel("question1", "answer1"));
-        when(testLoaderService.loadTests(reader)).thenReturn(tests);
+        List<QuestionModel> tests = new ArrayList<>();
+        tests.add(new QuestionModel("question1", "answer1"));
+        when(testLoaderService.loadQuestions(reader)).thenReturn(tests);
 
         when(inputService.getPersonFio()).thenReturn("fio");
         when(inputService.getUserAnswer("question1")).thenReturn("answer1");
 
-        testService.process("test.css");
+        testService.process("test.csv");
 
         ReportModel report = new ReportModel();
         report.setFio("fio");
@@ -57,22 +57,22 @@ class TestRunnerServiceImplTest {
         report.setQuestionCount(1);
         report.setSuccessAnswerCount(1);
 
-        verify(outputService).print(report);
+        verify(outputService).printTestReport(report);
     }
 
     @Test
     void processFail() throws TestInputException, IOException {
         BufferedReader reader = new BufferedReader(new StringReader("question1;answer1;\n"));
-        when(fileResolverService.getFileReader("test.css")).thenReturn(reader);
+        when(fileResolverService.getFileReader("test.csv")).thenReturn(reader);
 
-        List<TestModel> tests = new ArrayList<>();
-        tests.add(new TestModel("question1", "answer1"));
-        when(testLoaderService.loadTests(reader)).thenReturn(tests);
+        List<QuestionModel> tests = new ArrayList<>();
+        tests.add(new QuestionModel("question1", "answer1"));
+        when(testLoaderService.loadQuestions(reader)).thenReturn(tests);
 
         when(inputService.getPersonFio()).thenReturn("fio");
         when(inputService.getUserAnswer("question1")).thenReturn("wrong answer");
 
-        testService.process("test.css");
+        testService.process("test.csv");
 
         ReportModel report = new ReportModel();
         report.setFio("fio");
@@ -80,6 +80,6 @@ class TestRunnerServiceImplTest {
         report.setQuestionCount(1);
         report.setSuccessAnswerCount(0);
 
-        verify(outputService).print(report);
+        verify(outputService).printTestReport(report);
     }
 }

@@ -1,14 +1,14 @@
 package ru.lilitweb.testsystem.service;
 
-import ru.lilitweb.testsystem.models.TestModel;
+import ru.lilitweb.testsystem.models.QuestionModel;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CsvTestsLoaderService implements TestsLoaderService {
-    public List<TestModel> loadTests(BufferedReader reader) throws IOException {
-        ArrayList<TestModel> tests = new ArrayList<>();
+public class CsvTestsLoaderService implements QuestionsLoaderService {
+    public List<QuestionModel> loadQuestions(BufferedReader reader) throws IOException {
+        ArrayList<QuestionModel> tests = new ArrayList<>();
 
         String separator = ";";
         String line;
@@ -19,7 +19,7 @@ public class CsvTestsLoaderService implements TestsLoaderService {
                 continue;
             }
 
-            tests.add(new TestModel(data[0], data[1]));
+            tests.add(new QuestionModel(data[0], data[1]));
         }
 
         return tests;

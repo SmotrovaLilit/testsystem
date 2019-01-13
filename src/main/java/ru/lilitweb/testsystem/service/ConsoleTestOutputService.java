@@ -13,7 +13,7 @@ public class ConsoleTestOutputService implements TestOutputService {
         this.source = source;
     }
 
-    public void print(ReportModel report) {
+    public void printTestReport(ReportModel report) {
         stream.println(report.getFio() + ":");
         stream.println(String.format("%d/%d", report.getSuccessAnswerCount(), report.getQuestionCount()));
         if (report.isPassed()) {
@@ -22,5 +22,15 @@ public class ConsoleTestOutputService implements TestOutputService {
             return;
         }
         stream.println(source.getMessage("test.result.failed", null));
+    }
+
+    @Override
+    public void printQuestion(String question) {
+        stream.println(question);
+    }
+
+    @Override
+    public void printFioQuestion() {
+        stream.println(source.getMessage("input.name.label", null));
     }
 }
