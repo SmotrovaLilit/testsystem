@@ -12,27 +12,19 @@ public class TestRunnerServiceImpl implements TestRunnerService {
     private TestInputService inputService;
     private TestOutputService outputService;
     private QuestionsLoaderService questionsLoaderService;
-    private FileResolverService fileResolverService;
 
     public TestRunnerServiceImpl(
             TestInputService inputService,
             TestOutputService outputService,
-            QuestionsLoaderService testLoaderService,
-            FileResolverService fileResolverService
+            QuestionsLoaderService testLoaderService
     ) {
         this.inputService = inputService;
         this.outputService = outputService;
         this.questionsLoaderService = testLoaderService;
-        this.fileResolverService = fileResolverService;
     }
 
-    public void process(String filename) throws TestInputException, IOException {
-        List<QuestionModel> questions;
-
-        try (BufferedReader reader = fileResolverService.getFileReader(filename)) {
-            questions = questionsLoaderService.loadQuestions(reader);
-        }
-
+    public void process() throws TestInputException, IOException {
+        List<QuestionModel> questions = questionsLoaderService.loadQuestions();
         outputService.printFioQuestion();
         String fio = inputService.getPersonFio();
 

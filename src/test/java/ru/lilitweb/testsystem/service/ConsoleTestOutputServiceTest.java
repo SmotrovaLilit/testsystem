@@ -14,27 +14,27 @@ import static org.mockito.Mockito.when;
 class ConsoleTestOutputServiceTest {
 
     @Mock
-    private LocalisationService source;
+    private LocalisationService localisationService;
 
     @Mock
     private PrintStream stream;
 
     @BeforeEach
     void setUp() {
-        source = mock(LocalisationService.class);
+        localisationService = mock(LocalisationService.class);
         stream = mock(PrintStream.class);
     }
 
     @Test
     void printTestReport() {
-        TestOutputService service = new ConsoleTestOutputService(stream, source);
+        TestOutputService service = new ConsoleTestOutputService(stream, localisationService);
         ReportModel report = new ReportModel();
         report.setPassed(true);
         report.setQuestionCount(2);
         report.incSuccessAnswerCount();
         report.incSuccessAnswerCount();
         report.setFio("fio");
-        when(source.getMessage("test.result.success", null)).thenReturn("ok");
+        when(localisationService.getMessage("test.result.success")).thenReturn("ok");
 
         service.printTestReport(report);
         verify(stream).println("fio:");
@@ -44,13 +44,13 @@ class ConsoleTestOutputServiceTest {
 
     @Test
     void printTestReportFail() {
-        TestOutputService service = new ConsoleTestOutputService(stream, source);
+        TestOutputService service = new ConsoleTestOutputService(stream, localisationService);
         ReportModel report = new ReportModel();
         report.setPassed(false);
         report.setQuestionCount(2);
         report.incSuccessAnswerCount();
         report.setFio("fio");
-        when(source.getMessage("test.result.failed", null)).thenReturn("fail");
+        when(localisationService.getMessage("test.result.failed")).thenReturn("fail");
 
         service.printTestReport(report);
         verify(stream).println("fio:");
@@ -60,7 +60,7 @@ class ConsoleTestOutputServiceTest {
 
     @Test
     void printQuestion() {
-        TestOutputService service = new ConsoleTestOutputService(stream, source);
+        TestOutputService service = new ConsoleTestOutputService(stream, localisationService);
         String questionText = "some question";
         service.printQuestion(questionText);
         verify(stream).println(questionText);
@@ -69,8 +69,8 @@ class ConsoleTestOutputServiceTest {
 
     @Test
     void printFioQuestion() {
-        TestOutputService service = new ConsoleTestOutputService(stream, source);
-        when(source.getMessage("input.name.label", null)).thenReturn("fio ask");
+        TestOutputService service = new ConsoleTestOutputService(stream, localisationService);
+        when(localisationService.getMessage("input.name.label")).thenReturn("fio ask");
 
         service.printFioQuestion();
         verify(stream).println("fio ask");

@@ -11,18 +11,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 class ConsoleTestInputServiceTest {
-    @Mock
-    private LocalisationService source;
-
-    @Mock
-    private PrintStream stream;
-
-    @BeforeEach
-    void setUp() {
-        source = mock(LocalisationService.class);
-        stream = mock(PrintStream.class);
-    }
-
     @Test
     void getUserAnswer() throws TestInputException {
         InputStream reader = new ByteArrayInputStream("answer of tester\n".getBytes());
@@ -31,7 +19,6 @@ class ConsoleTestInputServiceTest {
         String answer = service.getUserAnswer("question");
 
         assertEquals(answer, "answer of tester");
-        verify(stream).println("question");
     }
 
     @Test

@@ -7,23 +7,31 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
 public class CsvTestsLoaderService implements QuestionsLoaderService {
-    public List<QuestionModel> loadQuestions(BufferedReader reader) throws IOException {
-        ArrayList<QuestionModel> tests = new ArrayList<>();
+    private FileResolverService fileResolverService;
 
-        String separator = ";";
-        String line;
+    public CsvTestsLoaderService(FileResolverService fileResolverService) {
+        this.fileResolverService = fileResolverService;
+    }
 
-        while ((line = reader.readLine()) != null) {
-            String[] data = line.split(separator);
-            if (data.length < 2) {
-                continue;
+    public List<QuestionModel> loadQuestions() throws IOException {
+        try(BufferedReader reader = fileResolverService.getFileReader()) {
+            ArrayList<QuestionModel> tests = new ArrayList<>();
+
+            String separator = ";";
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(separator);
+                if (data.length < 2) {
+                    continue;
+                }
+
+                tests.add(new QuestionModel(data[0], data[1]));
             }
 
-            tests.add(new QuestionModel(data[0], data[1]));
+            return tests;
         }
 
-        return tests;
     }
 }

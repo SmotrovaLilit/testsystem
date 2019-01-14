@@ -6,22 +6,22 @@ import java.io.PrintStream;
 
 public class ConsoleTestOutputService implements TestOutputService {
     private PrintStream stream;
-    private LocalisationService source;
+    private LocalisationService localisationService;
 
-    public ConsoleTestOutputService(PrintStream stream, LocalisationService source) {
+    public ConsoleTestOutputService(PrintStream stream, LocalisationService localisationService) {
         this.stream = stream;
-        this.source = source;
+        this.localisationService = localisationService;
     }
 
     public void printTestReport(ReportModel report) {
         stream.println(report.getFio() + ":");
         stream.println(String.format("%d/%d", report.getSuccessAnswerCount(), report.getQuestionCount()));
         if (report.isPassed()) {
-            String mess = source.getMessage("test.result.success", null);
+            String mess = localisationService.getMessage("test.result.success");
             stream.println(mess);
             return;
         }
-        stream.println(source.getMessage("test.result.failed", null));
+        stream.println(localisationService.getMessage("test.result.failed"));
     }
 
     @Override
@@ -31,6 +31,6 @@ public class ConsoleTestOutputService implements TestOutputService {
 
     @Override
     public void printFioQuestion() {
-        stream.println(source.getMessage("input.name.label", null));
+        stream.println(localisationService.getMessage("input.name.label"));
     }
 }

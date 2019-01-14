@@ -25,31 +25,31 @@ class TestRunnerServiceImplTest {
     private FileResolverService fileResolverService;
 
     @Mock
-    private QuestionsLoaderService testLoaderService;
+    private QuestionsLoaderService questionsLoaderService;
 
     @BeforeEach
     void setUp() {
         inputService = mock(TestInputService.class);
         outputService = mock(TestOutputService.class);
-        testLoaderService = mock(QuestionsLoaderService.class);
+        questionsLoaderService = mock(QuestionsLoaderService.class);
         fileResolverService = mock(FileResolverService.class);
-        testService = new TestRunnerServiceImpl(inputService, outputService, testLoaderService, fileResolverService);
+        testService = new TestRunnerServiceImpl(inputService, outputService, questionsLoaderService);
 
     }
 
     @Test
     void process() throws TestInputException, IOException {
         BufferedReader reader = new BufferedReader(new StringReader("question1;answer1;\n"));
-        when(fileResolverService.getFileReader("test.csv")).thenReturn(reader);
+        when(fileResolverService.getFileReader()).thenReturn(reader);
 
         List<QuestionModel> tests = new ArrayList<>();
         tests.add(new QuestionModel("question1", "answer1"));
-        when(testLoaderService.loadQuestions(reader)).thenReturn(tests);
+        when(questionsLoaderService.loadQuestions()).thenReturn(tests);
 
         when(inputService.getPersonFio()).thenReturn("fio");
         when(inputService.getUserAnswer("question1")).thenReturn("answer1");
 
-        testService.process("test.csv");
+        testService.process();
 
         ReportModel report = new ReportModel();
         report.setFio("fio");
@@ -63,16 +63,16 @@ class TestRunnerServiceImplTest {
     @Test
     void processFail() throws TestInputException, IOException {
         BufferedReader reader = new BufferedReader(new StringReader("question1;answer1;\n"));
-        when(fileResolverService.getFileReader("test.csv")).thenReturn(reader);
+        when(fileResolverService.getFileReader()).thenReturn(reader);
 
         List<QuestionModel> tests = new ArrayList<>();
         tests.add(new QuestionModel("question1", "answer1"));
-        when(testLoaderService.loadQuestions(reader)).thenReturn(tests);
+        when(questionsLoaderService.loadQuestions()).thenReturn(tests);
 
         when(inputService.getPersonFio()).thenReturn("fio");
         when(inputService.getUserAnswer("question1")).thenReturn("wrong answer");
 
-        testService.process("test.csv");
+        testService.process();
 
         ReportModel report = new ReportModel();
         report.setFio("fio");

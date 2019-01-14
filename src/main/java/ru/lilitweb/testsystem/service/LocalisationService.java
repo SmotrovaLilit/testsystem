@@ -1,7 +1,10 @@
 package ru.lilitweb.testsystem.service;
 
-import org.springframework.lang.Nullable;
+import java.util.Locale;
 
 public interface LocalisationService {
-    public String getMessage(String code, @Nullable Object[] var);
+    public String getMessage(String code, Object[] args);
+    public String getMessage(String code);
+
+    Locale getLocale();
 }

@@ -8,5 +8,5 @@ import java.io.IOException;
 import java.util.List;
 
 public interface QuestionsLoaderService {
-    List<QuestionModel> loadQuestions(BufferedReader reader) throws IOException;
+    List<QuestionModel> loadQuestions() throws IOException;
 }

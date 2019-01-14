@@ -1,7 +1,6 @@
 package ru.lilitweb.testsystem.service;
 
 import org.springframework.context.MessageSource;
-import org.springframework.stereotype.Service;
 
 import java.util.Locale;
 
@@ -17,7 +16,17 @@ public class LocalisationServiceImpl implements LocalisationService {
     }
 
     @Override
-    public String getMessage(String code, Object[] var) {
-        return source.getMessage(code, var, locale);
+    public String getMessage(String code, Object[] args) {
+        return source.getMessage(code, args, locale);
+    }
+
+    @Override
+    public String getMessage(String code) {
+        return source.getMessage(code, null, locale);
+    }
+
+    @Override
+    public Locale getLocale() {
+        return locale;
     }
 }
