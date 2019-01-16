@@ -1,14 +1,15 @@
 package ru.lilitweb.testsystem.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import ru.lilitweb.testsystem.service.ConsoleTestInputService;
+import ru.lilitweb.testsystem.service.TestInputException;
+import ru.lilitweb.testsystem.service.TestInputService;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ConsoleTestInputServiceTest {
     @Test

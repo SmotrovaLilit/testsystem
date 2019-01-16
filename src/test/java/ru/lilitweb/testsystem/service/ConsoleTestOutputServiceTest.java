@@ -4,12 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import ru.lilitweb.testsystem.models.ReportModel;
+import ru.lilitweb.testsystem.service.ConsoleTestOutputService;
+import ru.lilitweb.testsystem.service.LocalisationService;
+import ru.lilitweb.testsystem.service.TestOutputService;
 
 import java.io.PrintStream;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class ConsoleTestOutputServiceTest {
 

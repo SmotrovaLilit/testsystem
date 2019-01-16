@@ -1,0 +1,4 @@
+questions:
+  files:
+    default: questions.csv
+    ru: questions_ru.csv

@@ -1,11 +1,10 @@
 package ru.lilitweb.testsystem.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
+import org.springframework.core.io.ResourceLoader;
 import ru.lilitweb.testsystem.service.*;
 
 import java.util.Locale;
@@ -13,9 +12,8 @@ import java.util.Map;
 
 @Configuration
 public class ServicesConfig {
-
     @Autowired
-    Environment env;
+    private ResourceLoader resourceLoader;
 
     @Bean
     public LocalisationService localisationService(MessageSource source) {
@@ -33,14 +31,17 @@ public class ServicesConfig {
     }
 
     @Bean
-    public FileResolverService fileResolverService(LocalisationService localisationService) {
+    public FileResolverService fileResolverService(LocalisationService localisationService, QuestionsProperties properties) {
         Locale locale = localisationService.getLocale();
-        String configName = "questions.file." + locale.getLanguage();
-        if (env.getProperty(configName) != null) {
-            return new FileResolverServiceImpl(configName);
+
+        Map<String, String> files = properties.getFiles();
+        String fileName = files.get(locale.getLanguage());
+        if (fileName != null) {
+            return new FileResolverServiceImpl(fileName, resourceLoader);
         }
 
-        return new FileResolverServiceImpl(env.getProperty("questions.file.default"));
+
+        return new FileResolverServiceImpl(files.get("default"), resourceLoader);
     }
 
     @Bean

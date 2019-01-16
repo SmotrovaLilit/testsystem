@@ -1,26 +1,20 @@
 package ru.lilitweb.testsystem.service;
+import org.springframework.core.io.ResourceLoader;
 
-import lombok.NonNull;
-import org.springframework.stereotype.Service;
-import ru.lilitweb.testsystem.Main;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.Objects;
+import java.io.*;
 
 public class FileResolverServiceImpl implements FileResolverService {
     private String filename;
+    private ResourceLoader resourceLoader;
 
-    public FileResolverServiceImpl(String filename) {
+    public FileResolverServiceImpl(String filename, ResourceLoader resourceLoader) {
         this.filename = filename;
+        this.resourceLoader = resourceLoader;
     }
 
     @Override
-    public BufferedReader getFileReader() throws FileNotFoundException {
-        ClassLoader classLoader = Main.class.getClassLoader();
-        File file = new File(Objects.requireNonNull(classLoader.getResource(filename)).getFile());
+    public BufferedReader getFileReader() throws IOException {
+        File file = new File(resourceLoader.getResource(filename).getURI());
         return new BufferedReader(new FileReader(file));
     }
 }
