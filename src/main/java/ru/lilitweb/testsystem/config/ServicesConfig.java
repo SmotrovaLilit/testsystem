@@ -21,16 +21,6 @@ public class ServicesConfig {
     }
 
     @Bean
-    public TestInputService inputService() {
-        return new ConsoleTestInputService(System.in);
-    }
-
-    @Bean
-    public TestOutputService outputService(LocalisationService localisationService) {
-        return new ConsoleTestOutputService(System.out, localisationService);
-    }
-
-    @Bean
     public FileResolverService fileResolverService(LocalisationService localisationService, QuestionsProperties properties) {
         Locale locale = localisationService.getLocale();
 

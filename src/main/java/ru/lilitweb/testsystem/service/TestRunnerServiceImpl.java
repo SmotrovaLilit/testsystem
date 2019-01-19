@@ -1,53 +1,109 @@
 package ru.lilitweb.testsystem.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.lilitweb.testsystem.models.QuestionModel;
-import ru.lilitweb.testsystem.models.ReportModel;
+import ru.lilitweb.testsystem.models.TestResultModel;
 
 import java.io.IOException;
 import java.util.List;
 
 @Service
 public class TestRunnerServiceImpl implements TestRunnerService {
-    private TestInputService inputService;
-    private TestOutputService outputService;
-    private QuestionsLoaderService questionsLoaderService;
+    private final List<QuestionModel> questions;
+    private int questionNumber;
+    private TestResultModel testResultModel;
+    private boolean isFinishedAllQuestionsAnswering;
+    private boolean isWaitAnswer;
 
-    public TestRunnerServiceImpl(
-            TestInputService inputService,
-            TestOutputService outputService,
-            QuestionsLoaderService testLoaderService
-    ) {
-        this.inputService = inputService;
-        this.outputService = outputService;
-        this.questionsLoaderService = testLoaderService;
+    @Autowired
+    public TestRunnerServiceImpl(QuestionsLoaderService questionsLoaderService) throws IOException {
+        this.questions = questionsLoaderService.loadQuestions();
+        resetValues();
     }
 
-    public void process() throws TestInputException, IOException {
-        List<QuestionModel> questions = questionsLoaderService.loadQuestions();
-        outputService.printFioQuestion();
-        String fio = inputService.getPersonFio();
+    private void resetValues() {
+        testResultModel = null;
+        isFinishedAllQuestionsAnswering = false;
+        isWaitAnswer = false;
+        questionNumber = -1;
+    }
 
-        ReportModel report = new ReportModel();
-        report.setFio(fio);
-        report.setQuestionCount(questions.size());
-        report.setPassed(true);
+    @Override
+    public void start(String fio) {
+        testResultModel = new TestResultModel(questions, fio);
+    }
 
-        for (QuestionModel question : questions) {
-            outputService.printQuestion(question.getQuestionContent());
-            String userAnswer = inputService.getUserAnswer(question.getQuestionContent());
+    @Override
+    public void stop() {
+        resetValues();
+    }
 
-            if (isCorrectAnswer(question, userAnswer)) {
-                report.incSuccessAnswerCount();
-                continue;
-            }
-            report.setPassed(false);
+
+    @Override
+    public boolean isStarted() {
+        return testResultModel != null;
+    }
+
+    @Override
+    public String getPerson() {
+        return testResultModel == null ? "" : testResultModel.getFio();
+    }
+
+    @Override
+    public String getNextQuestion() throws TestQuestionsFinishedException {
+        if (!canAskNextQuestion()) {
+            throw new TestQuestionsFinishedException();
         }
 
-        outputService.printTestReport(report);
+        isWaitAnswer = true;
+        return questions.get(++questionNumber).getQuestionContent();
     }
 
-    private boolean isCorrectAnswer(QuestionModel question, String userAnswer) {
-        return question.getCorrectAnswer().equals(userAnswer);
+    @Override
+    public void answerQuestion(String answer) {
+        isWaitAnswer = false;
+        QuestionModel questionModel = questions.get(questionNumber);
+        testResultModel.setQuestionAnswer(questionModel, answer);
+        if (!canAskNextQuestion()) {
+            isFinishedAllQuestionsAnswering = true;
+        }
+    }
+
+    @Override
+    public boolean isFinishedAllQuestionsAnswering() {
+        return isFinishedAllQuestionsAnswering;
+    }
+
+    @Override
+    public int getCurrentQuestionNumber() {
+        return questionNumber + 1;
+    }
+
+    @Override
+    public int getQuestionsCount() {
+        return questions.size();
+    }
+
+    @Override
+    public boolean isWaitAnswer() {
+        return isWaitAnswer;
+    }
+
+    @Override
+    public boolean canAskNextQuestion() {
+        if (!isStarted()) {
+            return false;
+        }
+
+        if (isWaitAnswer) {
+            return false;
+        }
+
+        return questions.size() > getCurrentQuestionNumber();
+    }
+
+    public TestResultModel getResult() {
+        return testResultModel;
     }
 }

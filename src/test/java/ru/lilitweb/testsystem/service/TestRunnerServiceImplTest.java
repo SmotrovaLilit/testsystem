@@ -4,85 +4,131 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import ru.lilitweb.testsystem.models.QuestionModel;
-import ru.lilitweb.testsystem.models.ReportModel;
-import ru.lilitweb.testsystem.service.*;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class TestRunnerServiceImplTest {
-    private TestRunnerService testService;
 
     @Mock
-    private TestOutputService outputService;
+    QuestionsLoaderService questionsLoaderService;
 
-    @Mock
-    private TestInputService inputService;
+    private TestRunnerService runner;
 
-    @Mock
-    private FileResolverService fileResolverService;
-
-    @Mock
-    private QuestionsLoaderService questionsLoaderService;
+    private List<QuestionModel> questions;
 
     @BeforeEach
-    void setUp() {
-        inputService = mock(TestInputService.class);
-        outputService = mock(TestOutputService.class);
+    void setUp() throws IOException {
         questionsLoaderService = mock(QuestionsLoaderService.class);
-        fileResolverService = mock(FileResolverService.class);
-        testService = new TestRunnerServiceImpl(inputService, outputService, questionsLoaderService);
+        questions = new ArrayList<>();
+        questions.add(new QuestionModel("question1", "answer1"));
+        questions.add(new QuestionModel("question2", "answer2"));
+        when(questionsLoaderService.loadQuestions()).thenReturn(questions);
 
+        runner = new TestRunnerServiceImpl(questionsLoaderService);
     }
 
     @Test
-    void process() throws TestInputException, IOException {
-        BufferedReader reader = new BufferedReader(new StringReader("question1;answer1;\n"));
-        when(fileResolverService.getFileReader()).thenReturn(reader);
-
-        List<QuestionModel> tests = new ArrayList<>();
-        tests.add(new QuestionModel("question1", "answer1"));
-        when(questionsLoaderService.loadQuestions()).thenReturn(tests);
-
-        when(inputService.getPersonFio()).thenReturn("fio");
-        when(inputService.getUserAnswer("question1")).thenReturn("answer1");
-
-        testService.process();
-
-        ReportModel report = new ReportModel();
-        report.setFio("fio");
-        report.setPassed(true);
-        report.setQuestionCount(1);
-        report.setSuccessAnswerCount(1);
-
-        verify(outputService).printTestReport(report);
+    void start() throws IOException {
+        String fio = "fio";
+        runner.start(fio);
+        assertEquals(fio, runner.getPerson());
+        assertTrue(runner.isStarted());
     }
 
     @Test
-    void processFail() throws TestInputException, IOException {
-        BufferedReader reader = new BufferedReader(new StringReader("question1;answer1;\n"));
-        when(fileResolverService.getFileReader()).thenReturn(reader);
+    void stop() {
+        runner.stop();
+        assertEquals(0, runner.getCurrentQuestionNumber());
+        assertEquals("", runner.getPerson());
+        assertFalse(runner.isStarted());
+        assertFalse(runner.isFinishedAllQuestionsAnswering());
+    }
 
-        List<QuestionModel> tests = new ArrayList<>();
-        tests.add(new QuestionModel("question1", "answer1"));
-        when(questionsLoaderService.loadQuestions()).thenReturn(tests);
+    @Test
+    void getPerson() {
+        assertEquals("", runner.getPerson());
 
-        when(inputService.getPersonFio()).thenReturn("fio");
-        when(inputService.getUserAnswer("question1")).thenReturn("wrong answer");
+        String fio = "fio";
+        runner.start(fio);
+        assertEquals(fio, runner.getPerson());
+    }
 
-        testService.process();
+    @Test
+    void getNextQuestion() throws TestQuestionsFinishedException {
+        String fio = "fio";
+        runner.start(fio);
+        String question = runner.getNextQuestion();
+        assertEquals(questions.get(0).getQuestionContent(), question);
+    }
 
-        ReportModel report = new ReportModel();
-        report.setFio("fio");
-        report.setPassed(false);
-        report.setQuestionCount(1);
-        report.setSuccessAnswerCount(0);
+    @Test
+    void answerQuestion() throws TestQuestionsFinishedException {
+        runner.start("fio");
 
-        verify(outputService).printTestReport(report);
+        runner.getNextQuestion();
+        runner.answerQuestion("answer");
+        assertFalse(runner.isWaitAnswer());
+        assertFalse(runner.isFinishedAllQuestionsAnswering());
+
+        runner.getNextQuestion();
+        runner.answerQuestion("answer");
+        assertFalse(runner.isWaitAnswer());
+        assertTrue(runner.isFinishedAllQuestionsAnswering());
+    }
+
+
+    @Test
+    void getCurrentQuestionNumber() throws TestQuestionsFinishedException {
+        runner.start("fio");
+        assertEquals(0, runner.getCurrentQuestionNumber());
+        runner.getNextQuestion();
+        assertEquals(1, runner.getCurrentQuestionNumber());
+    }
+
+    @Test
+    void getQuestionsCount() {
+        assertEquals(questions.size(), runner.getQuestionsCount());
+    }
+
+    @Test
+    void canAskNextQuestion() {
+        assertFalse(runner.canAskNextQuestion());
+    }
+
+    @Test
+    void canAskNextQuestionIfTestStarted() {
+        runner.start("fio");
+        assertTrue(runner.canAskNextQuestion());
+    }
+
+    @Test
+    void canAskNextQuestionIfTestStopped() {
+        runner.start("fio");
+        runner.stop();
+        assertFalse(runner.canAskNextQuestion());
+    }
+
+    @Test
+    void canAskNextQuestionIfTestFinished() throws TestQuestionsFinishedException {
+        runner.start("fio");
+        runner.getNextQuestion();
+        runner.answerQuestion("");
+        runner.getNextQuestion();
+        runner.answerQuestion("");
+
+        assertFalse(runner.canAskNextQuestion());
+    }
+
+    @Test
+    void canAskNextQuestionIfTestWaitAnswer() throws TestQuestionsFinishedException {
+        runner.start("fio");
+        runner.getNextQuestion();
+        assertFalse(runner.canAskNextQuestion());
     }
 }
